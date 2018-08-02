@@ -1,0 +1,15 @@
+#page-admin-report-approvalindicator-index .indicatorbox {
+    white-space: nowrap;
+    border: 1px solid #888;
+    position: relative;
+}
+
+#page-admin-report-approvalindicator-index .indicatorbox .percentbar {
+    background-color: #ffcf00;
+    height: 20px;
+}
+
+#page-admin-report-approvalindicator-index .indicatorbox .percentlabel {
+    position: absolute;
+    left: 50%;
+}
