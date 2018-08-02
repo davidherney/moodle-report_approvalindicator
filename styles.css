@@ -13,3 +13,8 @@
     position: absolute;
     left: 50%;
 }
+
+#page-admin-report-approvalindicator-index .approvalindicatorcourse {
+    border: 1px solid #eee;
+    padding: 10px;
+}

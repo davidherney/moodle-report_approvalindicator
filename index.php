@@ -280,7 +280,7 @@ if ($courses) {
         $coursecontent .= html_writer::tag('p', $textcats);
 
 
-        $content .= $OUTPUT->box_start($statusclass) . $coursecontent . $OUTPUT->box_end();
+        $content .= $OUTPUT->box_start('approvalindicatorcourse ' . $statusclass) . $coursecontent . $OUTPUT->box_end();
 
     }
 
