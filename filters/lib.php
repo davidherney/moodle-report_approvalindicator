@@ -131,7 +131,7 @@ class approvalindicator_filtering {
         switch ($fieldname) {
             case 'course':
                 $courses = array();
-                $names = $DB->get_records('course', null, "fullname", 'id, fullname');
+                $names = $DB->get_records('course', array('enablecompletion' => 1), "fullname", 'id, fullname');
                 if ($names) {
                     foreach($names as $one) {
                         $courses[$one->id] = $one->fullname;

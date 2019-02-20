@@ -37,12 +37,12 @@ $who            = optional_param('who', 'summary', PARAM_ALPHA);
 
 admin_externalpage_setup('reportapprovalindicator', '', null, '', array('pagelayout' => 'report'));
 
-$baseurl = new moodle_url('/report/approvalindicator/index.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage));
+$baseurl = new moodle_url('/report/approvalindicator/index.php', array('sort' => $sort, 'dir' => $dir, 'perpage' => $perpage, 'page'=>$page));
 
 // Create the filter form.
 $filtering = new approvalindicator_filtering();
 
-list($extrasql, $params) = $filtering->get_sql_filter();
+list($extrasql, $params) = $filtering->get_sql_filter('enablecompletion = 1');
 
 if ($format) {
     $perpage = 0;
@@ -50,7 +50,7 @@ if ($format) {
 
 $courses = $DB->get_records_select('course', $extrasql, $params, $sort . ' ' . $dir, '*', $page * $perpage, $perpage);
 $coursesearchcount = $DB->count_records_select('course', $extrasql, $params);
-$coursecount = $DB->count_records('course');
+$coursecount = $DB->count_records('course', array('enablecompletion' => 1));
 
 if ($courses) {
 
@@ -286,7 +286,7 @@ if ($courses) {
 
 }
 
-if ($extrasql !== '') {
+if ($extrasql !== '' && $coursesearchcount !== $coursecount) {
     echo $OUTPUT->heading("$coursesearchcount / $coursecount " . get_string('courses'));
     $coursecount = $coursesearchcount;
 } else {
