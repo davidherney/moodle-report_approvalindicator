@@ -91,6 +91,13 @@ if ($courses) {
         $data = array();
         $userscache = array();
 
+        $courseid = optional_param('courseid', 0, PARAM_INT);
+
+        if ($courseid) {
+            $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+            $courses = array($course);
+        }
+
         foreach ($courses as $row) {
 
             $coursecontext = context_course::instance($row->id);
@@ -268,10 +275,22 @@ if ($courses) {
         if ($enrolledusers == 0) {
             $coursecontent .= html_writer::tag('p', get_string('notenrolledusers', 'report_approvalindicator'));
         } else {
+
+            $icondownload = new pix_icon('i/export', get_string('download'), 'moodle');
+
+            $url = $baseurl . '&format=csv&who=all&courseid=' . $row->id;
+            $userscontent = html_writer::tag('span', $enrolleduserscompletion,
+                array('data-completed-action' => 'show', 'data-course-id' => $row->id));
+
+            $enroledcontent = html_writer::tag('span', $enrolledusers,
+                array('data-all-action' => 'show', 'data-course-id' => $row->id));
+
             $a = new stdClass();
-            $a->users = $enrolleduserscompletion;
-            $a->all = $enrolledusers;
-            $coursecontent .= html_writer::tag('p', get_string('userscompletion', 'report_approvalindicator', $a));
+            $a->users = $userscontent;
+            $a->all = $enroledcontent;
+            $coursecontent .= html_writer::tag('p', get_string('userscompletion', 'report_approvalindicator', $a) .
+                $OUTPUT->action_icon($url, $icondownload));
+
             $coursecontent .= html_writer::start_tag('div', array('class' => 'indicatorbox'));
             $coursecontent .= html_writer::tag('div', $enrolleduserspercent . '%', array('class' => 'percentlabel'));
             $coursecontent .= html_writer::tag('div', '', array('class' => 'percentbar', 'style' => 'width: ' . $enrolleduserspercent . '%;'));
@@ -284,6 +303,17 @@ if ($courses) {
 
     }
 
+    $templatecontext = [
+        'title' => '',
+        'body' => '',
+        'footer' => ''
+    ];
+
+    $content .= html_writer::start_tag('div', array('id' => 'approvalindicator_modal'));
+    $content .= $OUTPUT->render_from_template('core/modal', $templatecontext);
+    $content .= html_writer::end_tag('div');
+
+    $PAGE->requires->js_call_amd('report_approvalindicator/approvalindicator_actions', 'init', array('root' => '#approvalindicator_modal > div'));
 }
 
 if ($extrasql !== '' && $coursesearchcount !== $coursecount) {
